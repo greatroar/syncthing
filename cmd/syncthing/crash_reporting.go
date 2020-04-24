@@ -117,9 +117,15 @@ func uploadPanicLog(ctx context.Context, urlBase, file string) error {
 }
 
 // filterLogLines returns the data without any log lines between the first
-// line and the panic trace. This is done in-place: the original data slice
-// is destroyed.
+// line and the panic trace, and with the current user's homedir replaced by
+// "~". This is done in-place: the original data slice is destroyed.
 func filterLogLines(data []byte) []byte {
+	var homedir []byte
+	u, err := user.Current()
+	if err == nil {
+		homedir = []byte(u.Homedir)
+	}
+
 	filtered := data[:0]
 	matched := false
 	for _, line := range bytes.Split(data, []byte("\n")) {
@@ -144,6 +150,12 @@ func filterLogLines(data []byte) []byte {
 			// and the following space.
 			if end := bytes.Index(line, []byte("]")); end > 1 && end < len(line)-2 && bytes.HasPrefix(line, []byte("[")) {
 				line = line[end+2:]
+			}
+			// Remove occurrences of user's homedir, which often contains
+			// personally identifying information. It may occur in source
+			// file names.
+			if len(homedir) > 0 {
+				line = bytes.ReplaceAll(line, homedir, []byte("~"))
 			}
 			filtered = append(filtered, line...)
 		}
