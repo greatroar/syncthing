@@ -24,7 +24,10 @@ func TestAssets(t *testing.T) {
 
 	var gr *gzip.Reader
 	gr, _ = gzip.NewReader(bytes.NewReader(idx))
-	idx, _ = ioutil.ReadAll(gr)
+	idx, err := ioutil.ReadAll(gr)
+	if err != nil {
+		t.Fatalf("gzip decompression of index.html: %v", err)
+	}
 
 	if !bytes.Contains(idx, []byte("<html")) {
 		t.Fatal("No html in index.html")

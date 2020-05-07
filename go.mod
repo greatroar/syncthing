@@ -11,6 +11,7 @@ require (
 	github.com/chmduquesne/rollinghash v0.0.0-20180912150627-a60f8e7142b5
 	github.com/d4l3k/messagediff v1.2.1
 	github.com/flynn-archive/go-shlex v0.0.0-20150515145356-3f9db97f8568
+	github.com/foobaz/go-zopfli v0.0.0-20140122214029-7432051485e2 // indirect
 	github.com/getsentry/raven-go v0.2.0
 	github.com/go-ldap/ldap/v3 v3.1.7
 	github.com/go-ole/go-ole v1.2.4 // indirect
